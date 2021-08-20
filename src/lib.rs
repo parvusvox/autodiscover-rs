@@ -64,7 +64,7 @@ fn handle_broadcast_message<F: Fn(std::io::Result<SocketAddr>)>(
             }
             // instead of returning the connected stream, just return the socket
             // since we don't know whether the peer has started its server yet
-            let _stream = TcpStream::connect(socket);
+            //let _stream = TcpStream::connect(socket);
             callback(Ok(socket));
         }
     }
