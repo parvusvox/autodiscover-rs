@@ -62,8 +62,10 @@ fn handle_broadcast_message<F: Fn(std::io::Result<TcpStream>)>(
                 trace!("saw connection attempt from myself, this should happen once");
                 continue;
             }
+            // instead of returning the connected stream, just return the socket
+            // since we don't know whether the peer has started its server yet
             let stream = TcpStream::connect(socket);
-            callback(stream);
+            callback(socket);
         }
     }
 }
