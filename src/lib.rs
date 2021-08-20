@@ -49,7 +49,7 @@ pub enum Method {
     Multicast(SocketAddr),
 }
 
-fn handle_broadcast_message<F: Fn(std::io::Result<TcpStream>)>(
+fn handle_broadcast_message<F: Fn(std::io::Result<SocketAddr>)>(
     socket: UdpSocket,
     my_socket: &SocketAddr,
     callback: &F,
@@ -64,8 +64,8 @@ fn handle_broadcast_message<F: Fn(std::io::Result<TcpStream>)>(
             }
             // instead of returning the connected stream, just return the socket
             // since we don't know whether the peer has started its server yet
-            let stream = TcpStream::connect(socket);
-            callback(socket);
+            let _stream = TcpStream::connect(socket);
+            callback(Ok(socket));
         }
     }
 }
@@ -113,7 +113,7 @@ fn to_bytes(connect_to: &SocketAddr) -> Vec<u8> {
 /// run will block forever. It sends a notification using the configured method, then listens for other notifications and begins
 /// connecting to them, calling spawn_callback (which should return right away!) with the connected streams. The connect_to address
 /// should be a socket we have already bind'ed too, since we advertise that to other autodiscovery clients.
-pub fn run<F: Fn(std::io::Result<TcpStream>)>(
+pub fn run<F: Fn(std::io::Result<SocketAddr>)>(
     connect_to: &SocketAddr,
     method: Method,
     spawn_callback: F,
