@@ -3,11 +3,14 @@
 autodiscover-rs implements a simple algorithm to detect peers on an
 IP network, connects to them, and calls back with the connected stream. The algorithm supports both UDP broadcast and multicasting.
 
+## Why the fork?
+In my usecase creating Elix, the file transfer utility, I needed the peer discovery to return an address so that Elix can keep trying to connect to the peer while the peer is starting its own server.
+
 ## Usage
 
 Cargo.toml
 ```toml
-autodiscover-rs = "0.1.0"
+autodiscover-rs = {git="https://github.com/parvusvox/autodiscover-rs"}
 ```
 
 In your app:
@@ -19,8 +22,8 @@ use std::thread;
 use autodiscover_rs::{self, Method};
 use env_logger;
 
-fn handle_client(stream: std::io::Result<TcpStream>) {
-    println!("Got a connection from {:?}", stream.unwrap().peer_addr());
+fn handle_client(stream: std::io::Result<SocketAddr>) {
+    println!("Got a connection from {:?}", stream.unwrap());
 }
 
 fn main() -> std::io::Result<()> {
